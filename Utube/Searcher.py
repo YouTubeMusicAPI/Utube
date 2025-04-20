@@ -1,7 +1,7 @@
 import asyncio
 from YouTubeMusic.YtSearch import Search
 
-class YTSearcher:
+class YouTubeSearcher:
     @staticmethod
     async def search(query: str, limit=1):
         results = await Search(query, limit=limit)
