@@ -45,7 +45,7 @@ async def main():
 
     if selected_format['format'] == 'video/mp4':
         post_processor = PostProcessor(output_filename)
-        mp3_path = await post_processor.convert_to_mp3()
+        mp3_path = post_processor.convert_to_mp3()
         print(f"Video downloaded and converted to MP3: {mp3_path}")
     else:
         print(f"Audio downloaded: {output_filename}")
