@@ -14,7 +14,7 @@ async def main():
     query = sys.argv[1]
     quality = sys.argv[2] if len(sys.argv) > 2 else "best"
 
-    searcher = Search(query)
+    searcher = search(query)
     video_info = searcher.run_search(query)
 
     if not video_info:
