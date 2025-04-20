@@ -1,25 +1,44 @@
-import shlex
+import asyncio
 import os
 import subprocess
 
 class PostProcessor:
-    def __init__(self, filename):
-        self.filename = filename
+    def __init__(self, input_file):
+        self.input_file = input_file
+        self.output_file = input_file.rsplit(".", 1)[0] + ".mp3"
 
     async def convert_to_mp3(self):
-        if not os.path.exists(self.filename):
-            print(f"File not found: {self.filename}")
+        print(f"[PostProcessor] Converting {self.input_file} to MP3")
+
+        if not os.path.exists(self.input_file):
+            print(f"[PostProcessor] Input file not found: {self.input_file}")
             return None
 
-        quoted_filename = shlex.quote(self.filename)
-        output_filename = quoted_filename.replace(".mp4", ".mp3")
-
-        cmd = f"ffmpeg -i {quoted_filename} -vn -ar 44100 -ac 2 -ab 192k -f mp3 {shlex.quote(output_filename)}"
+        cmd = [
+            "ffmpeg", "-y",
+            "-i", self.input_file,
+            "-vn",
+            "-ar", "44100",
+            "-ac", "2",
+            "-b:a", "192k",
+            self.output_file
+        ]
 
         try:
-            result = subprocess.run(cmd, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            print(result.stdout.decode())  # Print ffmpeg output
-            return output_filename
-        except subprocess.CalledProcessError as e:
-            print(f"Error during conversion: {e.stderr.decode()}")  # Print error output
+            process = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+            stdout, stderr = await process.communicate()
+
+            if process.returncode != 0:
+                print(f"[PostProcessor] ffmpeg error:\n{stderr.decode()}")
+                return None
+
+            print(f"[PostProcessor] Conversion completed: {self.output_file}")
+            return self.output_file
+
+        except Exception as e:
+            print(f"[PostProcessor] Exception during conversion: {str(e)}")
             return None
