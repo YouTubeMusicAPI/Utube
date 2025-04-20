@@ -15,7 +15,7 @@ async def main():
     quality = sys.argv[2] if len(sys.argv) > 2 else "best"
 
     searcher = YouTubeSearcher()
-    video_info = searcher.search(query)
+    video_info = await searcher.search(query)
 
     if not video_info:
         print("Error extracting video info.")
