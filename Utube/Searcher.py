@@ -1,23 +1,23 @@
-import asyncio
-from YouTubeMusic.YtSearch import Search
+from youtubesearchpython import VideosSearch
 
 class YouTubeSearcher:
-    @staticmethod
-    async def search(query: str, limit=1):
-        results = await Search(query, limit=limit)
-        if not results:
-            return None
-        songs = []
-        for song in results:
-            songs.append({
-                "title": song.get("title"),
-                "url": song.get("url"),
-                "thumbnail": song.get("thumbnail"),
-                "channel": song.get("channel_name"),
-                "views": song.get("views"),
-                "duration": song.get("duration"),
-                "artist": song.get("artist_name"),
-                "description": song.get("description")
-            })
-        return songs
-      
+    async def search(self, query):
+        try:
+            search = VideosSearch(query, limit=5)
+            results = await search.next()
+            videos = []
+
+            for video in results.get("result", []):
+                videos.append({
+                    "title": video.get("title"),
+                    "url": video.get("link"),
+                    "duration": video.get("duration"),
+                    "channel": video.get("channel", {}).get("name"),
+                    "views": video.get("viewCount", {}).get("short"),
+                })
+
+            return videos
+
+        except Exception as e:
+            print(f"[Searcher] Error searching YouTube: {str(e)}")
+            return []
