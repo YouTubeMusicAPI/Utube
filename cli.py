@@ -4,7 +4,7 @@ from Utube.Extractor import YouTubeExtractor
 from Utube.Format_selector import FormatSelector
 from Utube.Downloader import Downloader
 from Utube.Post_processing import PostProcessor
-from Utube.Searcher import Search
+from Utube.Searcher import search
 
 async def main():
     if len(sys.argv) < 2:
