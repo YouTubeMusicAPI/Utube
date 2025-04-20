@@ -1,17 +1,20 @@
-import subprocess
-import os
+import shlex
 
 class PostProcessor:
-    def __init__(self, video_filename):
-        self.video_filename = video_filename
+    def __init__(self, filename):
+        self.filename = filename
 
     async def convert_to_mp3(self):
-        output_filename = f"{os.path.splitext(self.video_filename)[0]}.mp3"
-        command = ['ffmpeg', '-i', self.video_filename, '-vn', '-ar', '44100', '-ac', '2', '-ab', '192k', '-f', 'mp3', output_filename]
+        import subprocess
+        import os
+        
+        quoted_filename = shlex.quote(self.filename)
+        output_filename = quoted_filename.replace(".mp4", ".mp3")
+
+        cmd = f"ffmpeg -i {quoted_filename} -vn -ar 44100 -ac 2 -ab 192k -f mp3 {shlex.quote(output_filename)}"
         
         try:
-            subprocess.run(command, check=True)
-            print(f"Successfully converted to MP3: {output_filename}")
+            subprocess.run(cmd, shell=True, check=True)
             return output_filename
         except subprocess.CalledProcessError as e:
             print(f"Error during conversion: {e}")
