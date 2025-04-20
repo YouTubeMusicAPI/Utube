@@ -1,29 +1,27 @@
 class FormatSelector:
     def __init__(self, video_info):
-        self.video_info = video_info
+        self.formats = video_info.get("formats", [])
 
-    def select_format(self, quality="best"):
-        formats = self.video_info['formats']
+    def select_format(self, quality):
+        if not self.formats:
+            return None
 
-        if quality == "best":
-            return max(formats, key=lambda x: x['quality'])
+        if "k" in quality:  # audio quality like 128k, 192k
+            bitrate = int(quality.replace("k", ""))
+            for f in sorted(self.formats, key=lambda x: int(x.get("abr", 0)), reverse=True):
+                if f.get("vcodec") == "none" and int(f.get("abr", 0)) <= bitrate:
+                    return {
+                        "url": f["url"],
+                        "format": f["ext"],
+                        "resolution": f"{f.get('abr', 'audio')}k"
+                    }
+        else:
+            for f in sorted(self.formats, key=lambda x: int(x.get("height", 0)), reverse=True):
+                if f.get("acodec") != "none" and f.get("vcodec") != "none":
+                    return {
+                        "url": f["url"],
+                        "format": f["ext"],
+                        "resolution": f"{f.get('height')}p"
+                    }
 
-        elif quality == "audio":
-            return next((f for f in formats if f['format'] == 'audio/mp3'), None)
-
-        elif quality == "4k":
-            return next((f for f in formats if f['resolution'] == '2160p (4K)'), None)
-
-        elif quality == "1440p":
-            return next((f for f in formats if f['resolution'] == '1440p'), None)
-
-        elif quality == "1080p":
-            return next((f for f in formats if f['resolution'] == '1080p'), None)
-
-        elif quality == "720p":
-            return next((f for f in formats if f['resolution'] == '720p'), None)
-
-        elif quality == "480p":
-            return next((f for f in formats if f['resolution'] == '480p'), None)
-
-        return max(formats, key=lambda x: x['quality'])
+        return None
