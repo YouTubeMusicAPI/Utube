@@ -4,7 +4,7 @@ from Utube.Extractor import YouTubeExtractor
 from Utube.Format_selector import FormatSelector
 from Utube.Downloader import Downloader
 from Utube.Post_processing import PostProcessor
-from Utube.Searcher import search
+from Utube.Searcher import YouTubeSearcher
 
 async def main():
     if len(sys.argv) < 2:
@@ -14,8 +14,8 @@ async def main():
     query = sys.argv[1]
     quality = sys.argv[2] if len(sys.argv) > 2 else "best"
 
-    searcher = search(query)
-    video_info = searcher.run_search(query)
+    searcher = YouTubeSearcher()
+    video_info = searcher.search(query)
 
     if not video_info:
         print("Error extracting video info.")
