@@ -1,0 +1,5 @@
+YouTubeMusic
+requests
+beautifulsoup4
+ffmpeg-python
+aiohttp
