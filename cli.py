@@ -23,7 +23,7 @@ async def main():
         
     video_info = video[0]
     extractor = YouTubeExtractor(video_info['url'])
-    video_info = await extractor.extract_info()
+    video_info = extractor.extract_info()
 
     if not video_info:
         print("Error extracting video info.")
