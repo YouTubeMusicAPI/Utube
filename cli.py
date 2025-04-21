@@ -32,7 +32,7 @@ async def main():
     # Debug: print all available formats
     print("\n📦 Available Formats:")
     for fmt in video_info.get("formats", []):
-        print(fmt)
+        print(f"Format: {fmt.get('format')}, Resolution: {fmt.get('resolution')}, Bitrate: {fmt.get('abr')}")
 
     selector = FormatSelector(video_info)
     selected_format = selector.select_format(quality)
