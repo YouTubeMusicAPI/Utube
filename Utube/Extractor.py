@@ -10,6 +10,7 @@ class YouTubeExtractor:
             "skip_download": True,
             "forcejson": True,
             "extract_flat": False,
+            "cookiefile": "cookies/cookies.txt",
         }
 
         try:
