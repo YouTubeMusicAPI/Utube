@@ -26,6 +26,10 @@ async def main():
     extractor = YouTubeExtractor(video_info['url'])
     video_info = await extractor.extract_info()
 
+    print("\n📦 Available Formats:")
+    for fmt in video_info.get("formats", []):
+    print(f"→ {fmt}")
+
     if not video_info:
         print("❌ Failed to extract video info.")
         return
